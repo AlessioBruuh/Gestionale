@@ -27,10 +27,10 @@ export default async function VariantDetailPage({ params }: PageProps) {
     notFound();
   }
 
-  const total = variant.stocks.reduce(
-    (sum, item) => sum + item.quantity,
-    0
-  );
+ const total = variant.stocks.reduce(
+  (sum: number, item: { quantity: number }) => sum + item.quantity,
+  0
+);
 
   return (
     <main className="p-8 max-w-6xl mx-auto">
