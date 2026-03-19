@@ -1,8 +1,48 @@
 import { prisma } from "@/lib/prisma";
 
+type SizeNameMap = Record<string, number>;
 
-export async function getInventoryRows(sizeGroup: "CLOTHING" | "PANTS" | "SHOES") {
-  const variants = await prisma.variant.findMany({
+type VariantWithRelations = {
+  id: number;
+  article: {
+    code: string;
+    name: string;
+    brand: string | null;
+    category: string | null;
+    season: string | null;
+    sizeGroup?: "CLOTHING" | "PANTS" | "SHOES" | null;
+  };
+  color: {
+    name: string;
+  };
+  stocks: Array<{
+    id: number;
+    sizeId: number;
+    quantity: number;
+    minQuantity: number;
+    barcode: string | null;
+    size: {
+      name: string;
+      sortOrder: number;
+    };
+  }>;
+};
+
+type MovementWithSize = {
+  id: number;
+  type: string;
+  quantity: number;
+  note: string | null;
+  createdAt: Date;
+  size: {
+    name: string;
+  };
+};
+
+export async function getInventoryRows(
+  sizeGroup: "CLOTHING" | "PANTS" | "SHOES"
+) {
+  const variants = (await prisma.variant.findMany({
     where: {
       article: {
         sizeGroup,
@@ -21,10 +61,10 @@ export async function getInventoryRows(sizeGroup: "CLOTHING" | "PANTS" | "SHOES"
       { article: { code: "asc" } },
       { color: { name: "asc" } },
     ],
-  });
+  })) as VariantWithRelations[];
 
-  return variants.map((variant) => {
-    const sizeMap: Record<string, number> = {};
+  return variants.map((variant: VariantWithRelations) => {
+    const sizeMap: SizeNameMap = {};
 
     for (const stock of variant.stocks) {
       sizeMap[stock.size.name] = stock.quantity;
@@ -39,8 +79,9 @@ export async function getInventoryRows(sizeGroup: "CLOTHING" | "PANTS" | "SHOES"
     };
   });
 }
+
 export async function getVariantById(id: number) {
-  const variant = await prisma.variant.findUnique({
+  const variant = (await prisma.variant.findUnique({
     where: { id },
     include: {
       article: true,
@@ -56,7 +97,7 @@ export async function getVariantById(id: number) {
         },
       },
     },
-  });
+  })) as VariantWithRelations | null;
 
   if (!variant) return null;
 
@@ -69,15 +110,18 @@ export async function getVariantById(id: number) {
     category: variant.article.category,
     season: variant.article.season,
     stocks: variant.stocks.map((stock) => ({
+      stockId: stock.id,
       sizeId: stock.sizeId,
       size: stock.size.name,
       quantity: stock.quantity,
       minQuantity: stock.minQuantity,
+      barcode: stock.barcode ?? "",
     })),
   };
 }
+
 export async function getVariantMovements(variantId: number) {
-  const movements = await prisma.movement.findMany({
+  const movements = (await prisma.movement.findMany({
     where: {
       variantId,
     },
@@ -88,9 +132,9 @@ export async function getVariantMovements(variantId: number) {
       createdAt: "desc",
     },
     take: 20,
-  });
+  })) as MovementWithSize[];
 
-  return movements.map((movement) => ({
+  return movements.map((movement: MovementWithSize) => ({
     id: movement.id,
     type: movement.type,
     quantity: movement.quantity,
