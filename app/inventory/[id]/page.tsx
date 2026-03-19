@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { notFound } from "next/navigation";
 import { getVariantById, getVariantMovements } from "@/lib/inventory";
 
