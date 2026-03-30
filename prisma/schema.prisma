@@ -14,6 +14,8 @@ model Article {
   category       String?
   season         String?
   sizeGroup      SizeGroup?
+  purchasePrice  Decimal?   @db.Decimal(10, 2)
+  salePrice      Decimal?   @db.Decimal(10, 2)
   barcode        String?    @unique
   purchasePrice  Decimal?   @db.Decimal(10, 2)
   salePrice      Decimal?   @db.Decimal(10, 2)

@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getInventoryRows } from "@/lib/inventory";
 import InventoryClient from "@/components/inventory/InventoryClient";
 

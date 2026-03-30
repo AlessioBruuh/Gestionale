@@ -12,6 +12,8 @@ export async function POST(req: Request) {
       brand,
       category,
       sizeGroup,
+      purchasePrice,
+      salePrice,
       colors,
       sizes,
       initialQuantities,

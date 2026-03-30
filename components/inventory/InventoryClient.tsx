@@ -192,7 +192,14 @@ export default function InventoryClient({
           </div>
 
 <div className="flex items-center gap-3">
+<Link
+  href="/pos"
+  className="rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm font-semibold text-gray-700 transition hover:bg-gray-100"
+>
+  POS
+</Link>
   <a
+    
     href="/api/reports/inventory"
     target="_blank"
     rel="noreferrer"
