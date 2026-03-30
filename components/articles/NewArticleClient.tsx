@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 "use client";
 
 import Link from "next/link";
@@ -505,7 +505,8 @@ function InfoRow({ label, value }: { label: string; value: string }) {
       </span>
     </div>
   );
-=======
+
+
 "use client";
 
 import Link from "next/link";
@@ -984,5 +985,5 @@ function InfoRow({ label, value }: { label: string; value: string }) {
       </span>
     </div>
   );
->>>>>>> 297b41aa509b3cd6d6cd1a4c211323b068796c3b
+
 }
